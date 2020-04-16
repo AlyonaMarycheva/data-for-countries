@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, useEffect } from 'react'
+import axios from 'axios'
+import Countries from './components/Countries'
 
-function App() {
+const App = () => {
+  const [countries, setCountries] = useState([])
+  const [filter, setFilter] = useState('')
+  const regexp = new RegExp(`${filter}`, 'i')
+
+
+  console.log(filter)
+  const findCountries = (event) => {
+    setFilter(event.target.value)
+  }
+
+  const hook = () => {
+    axios
+      .get('https://restcountries.eu/rest/v2/all')
+      .then(response => {
+        console.log(response.data)
+        setCountries(response.data)})
+  }  
+  useEffect(hook, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <div>
+        find countries <input value = {filter} onChange = {findCountries}/>
+      </div>
+      <Countries countries={countries} regexp = {regexp}/>
     </div>
-  );
+    
+  )
+  
 }
 
 export default App;
